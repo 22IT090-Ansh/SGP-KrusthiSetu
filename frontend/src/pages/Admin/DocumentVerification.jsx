@@ -7,6 +7,7 @@ import {
   XCircle, 
   Clock, 
   Download, 
+  Eye,
   User, 
   AlertTriangle, 
   Shield
@@ -94,12 +95,49 @@ function DocumentVerification() {
   };
 
   const handleDownloadDocument = async (docId) => {
+    // kept for backward compatibility: try to open by file id if passed
     try {
       const token = localStorage.getItem('token');
+      // If docId looks like a document type string (aid), we won't handle here
       window.open(`${API_BASE_URL}/api/documents/${docId}?token=${token}`, '_blank');
     } catch (err) {
       console.error('Error downloading document:', err);
       alert('Failed to download document');
+    }
+  };
+
+  // New: view document inline by calling backend file endpoint which streams the file
+  const handleViewDocument = async (documentType, farmerId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const resp = await fetch(`${API_BASE_URL}/api/documents/file/${documentType}/${farmerId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        console.error('Failed to fetch file:', resp.status, errText);
+        alert('Failed to load document');
+        return;
+      }
+
+      const blob = await resp.blob();
+      const url = window.URL.createObjectURL(blob);
+      // Open in a new tab
+      const newWin = window.open(url, '_blank', 'noopener,noreferrer');
+      if (!newWin) {
+        // Fallback: navigate current window
+        window.location.href = url;
+      }
+
+      // Optionally revoke object URL after some delay
+      setTimeout(() => window.URL.revokeObjectURL(url), 60 * 1000);
+    } catch (err) {
+      console.error('Error viewing document:', err);
+      alert('Failed to view document');
     }
   };
 
@@ -350,10 +388,12 @@ function DocumentVerification() {
                             <span className="text-white">Aadhaar Card</span>
                           </div>
                           <button 
-                            onClick={() => handleDownloadDocument(selectedFarmer.documents.aadhaar._id)}
+                            onClick={() => handleViewDocument('aadhaar', selectedFarmer.farmerId)}
+                            aria-label={`View Aadhaar for ${selectedFarmer.farmerName}`}
+                            title={`View Aadhaar for ${selectedFarmer.farmerName}`}
                             className="p-2 bg-teal-500/20 rounded-lg hover:bg-teal-500/30 transition-colors"
                           >
-                            <Download className="w-4 h-4 text-teal-300" />
+                            <Eye className="w-4 h-4 text-teal-300" />
                           </button>
                         </div>
                       )}
@@ -365,10 +405,12 @@ function DocumentVerification() {
                             <span className="text-white">Farmer Certificate</span>
                           </div>
                           <button 
-                            onClick={() => handleDownloadDocument(selectedFarmer.documents.certificate._id)}
+                            onClick={() => handleViewDocument('certificate', selectedFarmer.farmerId)}
+                            aria-label={`View Certificate for ${selectedFarmer.farmerName}`}
+                            title={`View Certificate for ${selectedFarmer.farmerName}`}
                             className="p-2 bg-teal-500/20 rounded-lg hover:bg-teal-500/30 transition-colors"
                           >
-                            <Download className="w-4 h-4 text-teal-300" />
+                            <Eye className="w-4 h-4 text-teal-300" />
                           </button>
                         </div>
                       )}
