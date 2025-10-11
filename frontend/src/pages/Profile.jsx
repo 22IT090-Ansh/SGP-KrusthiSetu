@@ -161,10 +161,10 @@ const ProfilePage = ({ onLogout }) => {
         return;
       }
       
-      // Prepare data for submission - match backend expectations
+      // Prepare data for submission - email is intentionally excluded (not editable)
       const submissionData = {
         name: formData.name,
-        email: formData.email,
+        // email: formData.email, <-- removed to prevent client-side change
         bio: formData.bio,
         phoneNumber: formData.phoneNumber,
         pincode: formData.pincode,
@@ -378,10 +378,12 @@ const ProfilePage = ({ onLogout }) => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    readOnly
+                    className="w-full pl-10 pr-4 py-3 bg-gray-800/40 border border-gray-600 rounded-lg focus:outline-none cursor-not-allowed"
                     placeholder="Your email address"
                   />
                 </div>
+                <p className="text-xs text-gray-400 mt-1">Email cannot be changed. Contact support to update your email.</p>
               </div>
               
               <div>
