@@ -8,11 +8,12 @@ const NotificationSystem = ({ role }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [lastFetchTime, setLastFetchTime] = useState(null);
-
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const fetchNotifications = async (forceRefresh = false) => {
     try {
       const token = localStorage.getItem('token');
-      const API_URL = 'http://localhost:5000';
+
+      
       
       // Remove the If-Modified-Since header for now to simplify the implementation
       const response = await axios.get(
@@ -105,7 +106,7 @@ const NotificationSystem = ({ role }) => {
   const markAllAsRead = async () => {
     try {
       const token = localStorage.getItem('token');
-      const API_URL = 'http://localhost:5000';
+      
       
       await axios.post(
         `${API_URL}/api/notifications/mark-read`,

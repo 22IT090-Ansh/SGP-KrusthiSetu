@@ -513,7 +513,7 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-green-200/10 dark:border-teal-800/10">
+                {/* <div className="pt-4 mt-4 border-t border-green-200/10 dark:border-teal-800/10">
                   <p className="text-sm text-gray-400 mb-2">
                     Apply Coupon Code
                   </p>
@@ -543,7 +543,7 @@ const CartPage = () => {
                       Coupon applied successfully!
                     </p>
                   )}
-                </div>
+                </div> */}
 
                 <button
                   onClick={handleCheckout}

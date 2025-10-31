@@ -60,7 +60,8 @@ const ProfilePage = ({ onLogout }) => {
         setError("Authentication required. Please log in.");
         return;
       }
-      
+      console.log("Fetching profile with token:", token);
+      console.log("API Base URL:", API_BASE_URL);
       const { data } = await axios.get(`${API_BASE_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -164,7 +165,6 @@ const ProfilePage = ({ onLogout }) => {
       // Prepare data for submission - email is intentionally excluded (not editable)
       const submissionData = {
         name: formData.name,
-        // email: formData.email, <-- removed to prevent client-side change
         bio: formData.bio,
         phoneNumber: formData.phoneNumber,
         pincode: formData.pincode,
@@ -232,7 +232,7 @@ const ProfilePage = ({ onLogout }) => {
   const backgroundStyle = {
     minHeight: "100vh",
     background: "linear-gradient(to bottom, #0c1816, #0b1f1a)",
-    paddingTop: "80px", // Account for navbar
+     // Account for navbar
     paddingBottom: "40px" // Add bottom padding
   };
 

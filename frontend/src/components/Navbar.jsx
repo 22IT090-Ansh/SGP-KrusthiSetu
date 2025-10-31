@@ -86,10 +86,23 @@ function Navbar() {
         }
       }
     };
-    
+
+    const handleCartUpdatedEvent = (e) => {
+      try {
+        const cartItems = e?.detail ? e.detail : JSON.parse(localStorage.getItem('cart') || '[]');
+        const itemCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+        setCartCount(itemCount);
+      } catch (err) {
+        console.error('Error handling cartUpdated event:', err);
+      }
+    };
+
     window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("cartUpdated", handleCartUpdatedEvent);
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("cartUpdated", handleCartUpdatedEvent);
     };
   }, []);
 

@@ -211,6 +211,13 @@ const TrackOrders = () => {
     }
   };
 
+  // Format currency to 2 decimal places
+  const formatAmount = (value) => {
+    const num = Number(value) || 0;
+    // Use toFixed for consistent 2 decimal places
+    return num.toFixed(2);
+  };
+
   // Update the OrderTimeline component to be horizontal
   const OrderTimeline = ({ status }) => {
     const steps = [
@@ -224,21 +231,21 @@ const TrackOrders = () => {
 
     return (
       <div className="relative mt-8">
-        {/* Horizontal line */}
-        <div className="absolute top-4 left-0 w-full h-0.5 bg-gray-700"></div>
-        
-        {/* Steps */}
-        <div className="relative flex justify-between">
+        {/* Horizontal line on medium+ screens */}
+        <div className="hidden sm:block absolute top-4 left-0 w-full h-0.5 bg-gray-700" />
+        {/* Vertical line on small screens */}
+        <div className="block sm:hidden absolute left-4 top-0 h-full w-0.5 bg-gray-700" />
+
+        {/* Steps: column on small screens, row on medium+ */}
+        <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center">
           {steps.map((step, index) => (
-            <div key={step.status} className="flex flex-col items-center">
+            <div key={step.status} className="flex items-start sm:flex-col sm:items-center gap-3 sm:gap-2 mb-4 sm:mb-0">
               <div className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full 
                 ${index <= currentStep ? 'bg-teal-500' : 'bg-gray-700'} 
                 transition-colors duration-300`}>
                 {step.icon}
               </div>
-              <p className={`mt-2 text-sm font-medium ${
-                index <= currentStep ? 'text-teal-500' : 'text-gray-400'
-              }`}>
+              <p className={`text-sm font-medium ${index <= currentStep ? 'text-teal-500' : 'text-gray-400'}`}>
                 {step.label}
               </p>
             </div>
@@ -388,13 +395,11 @@ const TrackOrders = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className={`bg-white/5 backdrop-blur-sm rounded-xl p-6 border 
-          ${isUpdated 
-            ? 'border-teal-500 shadow-lg shadow-teal-500/20' 
-            : 'border-green-200/20'} 
+          ${isUpdated ? 'border-teal-500 shadow-lg shadow-teal-500/20' : 'border-green-200/20'} 
           transition-all duration-300`}
       >
-        <div className="flex justify-between items-start mb-4">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+          <div className="flex-1">
             <h3 className="text-xl font-semibold text-teal-50">Order #{order.orderNumber}</h3>
             <p className="text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
           </div>
@@ -405,30 +410,32 @@ const TrackOrders = () => {
 
         <div className="space-y-4">
           {order.items.map((item, index) => (
-            <div key={index} className="flex justify-between items-center bg-white/5 p-4 rounded-lg">
+            <div key={index} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/5 p-4 rounded-lg gap-2">
               <div>
                 <p className="text-teal-50">{item.name}</p>
                 <p className="text-gray-400">Quantity: {item.quantity}</p>
                 <p className="text-gray-400">Farmer: {item.farmer_details.name}</p>
               </div>
-              <p className="text-teal-50">₹{item.price * item.quantity}</p>
+              <p className="text-teal-50">₹{formatAmount(item.price * item.quantity)}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-6 border-t border-gray-700 pt-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div className="text-teal-50">
               <p>Total Amount:</p>
-              <p className="text-xl font-semibold">₹{order.totalAmount}</p>
+              <p className="text-xl font-semibold">₹{formatAmount(order.totalAmount)}</p>
             </div>
             {showCancelButton && order.orderStatus !== 'delivered' && (
-              <button
-                onClick={() => cancelOrder(order._id)}
-                className="px-4 py-2 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors"
-              >
-                Cancel Order
-              </button>
+              <div className="w-full md:w-auto">
+                <button
+                  onClick={() => cancelOrder(order._id)}
+                  className="w-full md:inline-block px-4 py-2 bg-red-500/20 text-red-500 rounded-lg hover:bg-red-500/30 transition-colors"
+                >
+                  Cancel Order
+                </button>
+              </div>
             )}
           </div>
 

@@ -23,7 +23,8 @@ const httpServer = createServer(app);
 
 // Update CORS configuration
 app.use(cors({
-  origin: "http://localhost:5173", // Your frontend URL
+  origin: ["https://krushisetu-dishangpatel-13-1.onrender.com", "https://krushi-setu.netlify.app" , "http://localhost:5173"],
+
   credentials: true
 }));
 

@@ -7,7 +7,7 @@ import RegisterPage from './pages/RegisterPage';  // Import Register Page
 import AdminMain from './pages/Admin/AdminRoute';
 import FarmerMain from './pages/Farmers/FarmerRoutes';
 import ConsumerMain from './pages/Consumers/ConsumerRoutes';
-import Marketplace from './pages/Marketplace';
+import Marketplace from './pages/MarketPlace';
 
 import React from 'react';
 import { Toaster } from 'react-hot-toast';

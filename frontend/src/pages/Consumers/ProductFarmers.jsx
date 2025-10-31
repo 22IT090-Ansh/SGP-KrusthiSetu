@@ -433,6 +433,14 @@ function ProductFarmers() {
       
       // Save updated cart to localStorage
       localStorage.setItem("cart", JSON.stringify(existingCart));
+      // Notify other components in this tab that cart changed
+      try {
+        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: existingCart }));
+      } catch (e) {
+        // fallback: no-op
+      }
+      // Optional toast
+      toast.success(`${product.name} added to cart`);
       
       // Success - no alert, just console log
       console.log(`Cart updated successfully! Total items: ${existingCart.length}`);
