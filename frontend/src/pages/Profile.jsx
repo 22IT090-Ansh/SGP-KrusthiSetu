@@ -37,7 +37,7 @@ const initialFormData = {
   city: "",
   profileImage: "",
 };
-
+//11
 const ProfilePage = ({ onLogout }) => {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
@@ -276,7 +276,7 @@ const ProfilePage = ({ onLogout }) => {
 
   return (
     <div style={backgroundStyle} className="px-6">
-      <div className="max-w-4xl mx-auto mb-6">
+      <div className="max-w-5xl mx-auto mb-6 flex items-center justify-between pt-10 pb-4">
         <button
           onClick={goToDashboard}
           className="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors"
@@ -284,21 +284,29 @@ const ProfilePage = ({ onLogout }) => {
           <ArrowLeft size={20} />
           <span>Back to Dashboard</span>
         </button>
+        {/* <div className="hidden sm:flex gap-3">
+          <button onClick={() => setEditing(true)} className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+            <Edit size={16} />
+            Edit
+          </button>
+          <button onClick={handleLogout} className="bg-red-900/50 hover:bg-red-900/70 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+            <LogOut size={16} />
+            Sign Out
+          </button>
+        </div> */}
       </div>
 
       <motion.div
-        className="max-w-4xl mx-auto bg-gray-900/50 backdrop-blur-sm text-white p-8 rounded-xl shadow-lg"
-        initial={{ opacity: 0, y: 20 }}
+        className="max-w-5xl mx-auto bg-gray-900/50 backdrop-blur-sm text-white p-6 rounded-xl shadow-lg"
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.45 }}
       >
-        {/* Profile Header */}
-        <div className="relative mb-6">
-          <div className="absolute inset-0 bg-teal-600/10 h-32 rounded-t-xl -mx-8 top-0"></div>
-          
-          <div className="relative pt-4 flex flex-col md:flex-row items-center">
-            <div className="relative group">
-              <div className={`w-32 h-32 rounded-full overflow-hidden border-4 border-gray-800 shadow-lg ${uploadingImage ? 'opacity-60' : ''}`}>
+        {/* Two column layout: left = avatar & quick info, right = content */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <aside className="col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="relative mb-4">
+              <div className={`w-36 h-36 rounded-full overflow-hidden border-4 border-gray-800 shadow-lg ${uploadingImage ? 'opacity-60' : ''}`}>
                 <img
                   src={
                     formData.profileImage
@@ -307,333 +315,190 @@ const ProfilePage = ({ onLogout }) => {
                   }
                   alt="Profile"
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `https://ui-avatars.com/api/?name=${formData.name || "User"}&size=128&background=1e3a8a&color=ffffff`;
-                  }}
                 />
                 {uploadingImage && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 border-t-2 border-teal-500 border-solid rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-t-2 border-teal-500 border-solid rounded-full animate-spin"></div>
                   </div>
                 )}
               </div>
-              <label htmlFor="profileImageUpload" className="absolute bottom-0 right-0 bg-teal-500 hover:bg-teal-600 p-2 rounded-full cursor-pointer shadow-lg transition-all">
-                <Camera size={18} />
+              <label htmlFor="profileImageUpload" className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-teal-500 hover:bg-teal-600 p-2 rounded-full cursor-pointer shadow-lg transition-all border-2 border-gray-900">
+                <Camera size={16} />
                 <input type="file" id="profileImageUpload" className="hidden" onChange={handleImageUpload} accept="image/*" />
               </label>
             </div>
-            
-            <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
-              <h2 className="text-3xl font-bold">{formData.name || "User"}</h2>
-              <p className="text-gray-400 flex items-center justify-center md:justify-start mt-1">
-                <Mail size={16} className="mr-2" /> {formData.email}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                Member since {formData.createdAt ? new Date(formData.createdAt).toLocaleDateString("en-US", {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                }) : "N/A"}
-              </p>
+
+            <h2 className="text-2xl font-bold">{formData.name || 'User'}</h2>
+            <p className="text-gray-400 text-sm flex items-center gap-2 mt-1">
+              <Mail size={14} className="text-teal-400" /> {formData.email}
+            </p>
+            <p className="text-gray-500 text-sm mt-2">Member since {formData.createdAt ? new Date(formData.createdAt).toLocaleDateString() : 'N/A'}</p>
+
+            <div className="w-full mt-6 space-y-3">
+              <button onClick={() => setEditing(true)} className="w-full bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+                <Edit size={16} /> Edit Profile
+              </button>
+              <button onClick={handleLogout} className="w-full bg-red-900/50 hover:bg-red-900/70 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+                <LogOut size={16} /> Sign Out
+              </button>
             </div>
-          </div>
+          </aside>
+
+          <main className="col-span-2">
+            {/* Header card */}
+            <div className="mb-6 bg-gradient-to-r from-teal-800/20 to-teal-700/8 border border-gray-700 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-white">Profile Overview</h3>
+                  <p className="text-gray-400 text-sm">Manage your details and contact information</p>
+                </div>
+                <div className="hidden sm:flex gap-2">
+                  <button onClick={() => setEditing(true)} className="bg-gray-800/40 hover:bg-gray-800/50 text-white px-3 py-1 rounded-lg flex items-center gap-2">
+                    <Edit size={14} /> Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Content area: either form (editing) or read-only cards */}
+            {editing ? (
+              <motion.form onSubmit={handleSave} className="space-y-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Full Name</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your full name" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Email Address</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Mail size={18} className="text-gray-500" />
+                      </div>
+                      <input type="email" name="email" value={formData.email} readOnly className="w-full pl-10 pr-4 py-3 bg-gray-800/40 border border-gray-600 rounded-lg focus:outline-none cursor-not-allowed" placeholder="Your email address" />
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Email cannot be changed. Contact support to update your email.</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Phone Number</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Phone size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="phoneNumber" value={formData.phoneNumber || ""} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your phone number" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">City / Village</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Home size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="city" value={formData.city || ""} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your city or village" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">District</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <MapPin size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="district" value={formData.district || ""} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your district" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">State</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Map size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="state" value={formData.state || ""} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your state" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-sm mb-2">Pincode</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <MapPin size={18} className="text-gray-500" />
+                      </div>
+                      <input type="text" name="pincode" value={formData.pincode || ""} onChange={handleChange} className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Your pincode" />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">Bio</label>
+                  <textarea name="bio" value={formData.bio || ""} onChange={handleChange} rows={4} className="w-full pl-3 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Tell us about yourself" />
+                </div>
+
+                <div className="flex gap-4 pt-2">
+                  <button type="submit" disabled={saving} className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-60">
+                    {saving ? (<><div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin mr-2" /> Saving...</>) : (<><Save size={18} className="mr-2" /> Save Profile</>)}
+                  </button>
+                  <button type="button" onClick={() => setEditing(false)} disabled={saving} className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
+                    Cancel
+                  </button>
+                </div>
+              </motion.form>
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                  <h4 className="text-lg font-semibold mb-2 text-teal-400">Bio</h4>
+                  <p className="text-gray-300 whitespace-pre-line">{formData.bio || 'No bio information available.'}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-3 text-teal-400">Contact</h4>
+                    <div className="flex items-start gap-3">
+                      <Phone size={18} className="text-teal-400 mt-0.5" />
+                      <div>
+                        <p className="text-gray-400 text-sm">Phone Number</p>
+                        <p className="text-white">{formData.phoneNumber || 'Not provided'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 mt-3">
+                      <Mail size={18} className="text-teal-400 mt-0.5" />
+                      <div>
+                        <p className="text-gray-400 text-sm">Email</p>
+                        <p className="text-white">{formData.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-3 text-teal-400">Location</h4>
+                    <div className="space-y-3 text-sm text-gray-300">
+                      <div className="flex items-start gap-3"><Home size={16} className="text-teal-400 mt-0.5" /><div><p className="text-gray-400 text-xs">City / Village</p><p className="text-white">{formData.city || 'Not provided'}</p></div></div>
+                      <div className="flex items-start gap-3"><MapPin size={16} className="text-teal-400 mt-0.5" /><div><p className="text-gray-400 text-xs">District</p><p className="text-white">{formData.district || 'Not provided'}</p></div></div>
+                      <div className="flex items-start gap-3"><Map size={16} className="text-teal-400 mt-0.5" /><div><p className="text-gray-400 text-xs">State</p><p className="text-white">{formData.state || 'Not provided'}</p></div></div>
+                      <div className="flex items-start gap-3"><Globe size={16} className="text-teal-400 mt-0.5" /><div><p className="text-gray-400 text-xs">Country</p><p className="text-white">{formData.country || 'Not provided'}</p></div></div>
+                      <div className="flex items-start gap-3"><MapPin size={16} className="text-teal-400 mt-0.5" /><div><p className="text-gray-400 text-xs">Pincode</p><p className="text-white">{formData.pincode || 'Not provided'}</p></div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button onClick={() => setEditing(true)} className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"><Edit size={16} /> Edit</button>
+                  <button onClick={handleLogout} className="flex-1 bg-red-900/50 hover:bg-red-900/70 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"><LogOut size={16} /> Sign Out</button>
+                </div>
+              </div>
+            )}
+          </main>
         </div>
 
-        {/* Profile Content */}
-        {editing ? (
-          <motion.form 
-            onSubmit={handleSave} 
-            className="space-y-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Full Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your full name"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    readOnly
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800/40 border border-gray-600 rounded-lg focus:outline-none cursor-not-allowed"
-                    placeholder="Your email address"
-                  />
-                </div>
-                <p className="text-xs text-gray-400 mt-1">Email cannot be changed. Contact support to update your email.</p>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Phone Number</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    value={formData.phoneNumber || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your phone number"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">City / Village</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Home size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your city or village"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">District</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MapPin size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="district"
-                    value={formData.district || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your district"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Pincode</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MapPin size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="pincode"
-                    value={formData.pincode || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your pincode"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">State</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Map size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your state"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">Country</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Globe size={18} className="text-gray-500" />
-                  </div>
-                  <input
-                    type="text"
-                    name="country"
-                    value={formData.country || ""}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Your country"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-gray-400 text-sm mb-2">Bio</label>
-              <div className="relative">
-                <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-                  <FileText size={18} className="text-gray-500" />
-                </div>
-                <textarea
-                  name="bio"
-                  value={formData.bio || ""}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  placeholder="Tell us about yourself"
-                ></textarea>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {saving ? (
-                  <>
-                    <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin mr-2"></div>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save size={18} className="mr-2" />
-                    Save Profile
-                  </>
-                )}
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => setEditing(false)}
-                disabled={saving}
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                <X size={18} className="mr-2" />
-                Cancel
-              </button>
-            </div>
-          </motion.form>
-        ) : (
-          <motion.div 
-            className="space-y-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-semibold mb-4 text-teal-400">Bio</h3>
-              <p className="text-gray-300 whitespace-pre-line">
-                {formData.bio || "No bio information available."}
-              </p>
-            </div>
-            
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-semibold mb-4 text-teal-400">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start">
-                  <Phone size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Phone Number</p>
-                    <p className="text-white">{formData.phoneNumber || "Not provided"}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <Mail size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Email Address</p>
-                    <p className="text-white">{formData.email}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-semibold mb-4 text-teal-400">Location</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start">
-                  <Home size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">City / Village</p>
-                    <p className="text-white">{formData.city || "Not provided"}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <MapPin size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">District</p>
-                    <p className="text-white">{formData.district || "Not provided"}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <Map size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">State</p>
-                    <p className="text-white">{formData.state || "Not provided"}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <Globe size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Country</p>
-                    <p className="text-white">{formData.country || "Not provided"}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <MapPin size={18} className="text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Pincode</p>
-                    <p className="text-white">{formData.pincode || "Not provided"}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <button
-              onClick={() => setEditing(true)}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center justify-center mt-6"
-            >
-              <Edit size={18} className="mr-2" />
-              Edit Profile
-            </button>
-          </motion.div>
-        )}
-        
-        <button
-          onClick={handleLogout}
-          className="w-full bg-red-900/50 hover:bg-red-900/70 text-white px-6 py-3 rounded-lg flex items-center justify-center mt-6"
-        >
-          <LogOut size={18} className="mr-2" />
-          Sign Out
-        </button>
-        
         <ToastContainer 
           position="bottom-right"
           autoClose={5000}
